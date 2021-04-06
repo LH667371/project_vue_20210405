@@ -162,8 +162,8 @@
                 </el-form-item>
                 <el-form-item label="性别" :label-width="formLabelWidth">
                     <el-select v-model="form1.gender" placeholder="请选择性别">
-                        <el-option label="男" value=0></el-option>
-                        <el-option label="女" value=1></el-option>
+                        <el-option label="男" :value=0></el-option>
+                        <el-option label="女" :value=1></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="生日" :label-width="formLabelWidth">
@@ -176,9 +176,9 @@
                 </el-form-item>
                 <el-form-item label="部门" :label-width="formLabelWidth">
                     <el-select v-model="form1.depart" placeholder="请选择部门">
-                        <el-option label="财务部" value=1></el-option>
-                        <el-option label="研发部" value=2></el-option>
-                        <el-option label="人力部" value=3></el-option>
+                        <el-option label="财务部" :value=1></el-option>
+                        <el-option label="研发部" :value=2></el-option>
+                        <el-option label="人力部" :value=3></el-option>
                     </el-select>
                 </el-form-item>
             </el-form>
