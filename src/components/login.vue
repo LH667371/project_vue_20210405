@@ -4,13 +4,13 @@
             <div id="header">
                 <div id="rightheader">
                     <p>
-                        2021/04/02
+                        {{ date }}
                         <br/>
                     </p>
                 </div>
                 <div id="topheader">
                     <h1 id="title">
-                        <a href="#">main</a>
+                        <a href="#">Main</a>
                     </h1>
                 </div>
                 <div id="navigation">
@@ -57,7 +57,8 @@
                     </tr>
                 </table>
                 <p align="center">
-                    <input type="submit" class="button" value="提 交" @click="login"/>
+                    <el-button @click="login" size="small" round>提 交</el-button>
+<!--                    <input type="submit" class="button" value="提 交" @click="login"/>-->
                     &nbsp;&nbsp
                     <router-link to="register/">注册</router-link>
                 </p>
@@ -76,6 +77,7 @@ export default {
     name: "login",
     data() {
         return {
+            date: new Date().toLocaleString(),
             username: "",
             msg1: false,
             password: "",
@@ -151,6 +153,16 @@ export default {
         //             console.log(error);
         //         })
         // },
+    },
+    mounted() {
+        this.timer = setInterval(() => {
+            this.date = new Date().toLocaleString(); // 修改数据date
+        }, 1000)
+    },
+    beforeDestroy() {
+        if (this.timer) {
+            clearInterval(this.timer); // 在Vue实例销毁前，清除我们的定时器
+        }
     },
 }
 </script>

@@ -4,14 +4,14 @@
             <div id="header">
                 <div id="rightheader">
                     <p>
-                        2021/04/02
+                        {{ date }}
                         <br/>
                         <a href="javascript:void(0)" @click="logout">安全退出</a>
                     </p>
                 </div>
                 <div id="topheader">
                     <h1 id="title">
-                        <a href="#">main</a>
+                        <a href="#">Main</a>
                     </h1>
                 </div>
                 <div id="navigation">
@@ -80,11 +80,13 @@
                         </td>
                         <td>
                             <el-tooltip class="item" effect="dark" content="删除" placement="right-start">
-                            <el-button type="danger" icon="el-icon-delete" size="mini" @click="del_emp(value['id'], value['name'], index)" round></el-button>
+                                <el-button type="danger" icon="el-icon-delete" size="mini"
+                                           @click="del_emp(value['id'], value['name'], index)" round></el-button>
                             </el-tooltip>
                             &nbsp;
                             <el-tooltip class="item" effect="dark" content="修改" placement="right-start">
-                            <el-button type="primary" icon="el-icon-edit" size="mini" @click="update_emp(value['id'])" round></el-button>
+                                <el-button type="primary" icon="el-icon-edit" size="mini"
+                                           @click="update_emp(value['id'])" round></el-button>
                             </el-tooltip>
                         </td>
                     </tr>
@@ -99,6 +101,8 @@
                 ABC@126.com
             </div>
         </div>
+
+
         <el-dialog title="添加员工" :visible.sync="dialogFormVisible" width="700px" @close="close_dialog(0)">
             <el-form :model="form">
                 <el-form-item label="头像" :label-width="formLabelWidth">
@@ -134,15 +138,14 @@
                 <el-form-item label="生日" :label-width="formLabelWidth">
                     <el-col :span="21">
                         <el-date-picker type="date" placeholder="请选择日期" format="yyyy年 MM月 dd日" v-model="form.birthday"
-                                        value-format="yyyy-MM-dd"
-                                        style="width: 100%;"></el-date-picker>
+                                        value-format="yyyy-MM-dd"></el-date-picker>
                     </el-col>
                 </el-form-item>
                 <el-form-item label="部门" :label-width="formLabelWidth">
                     <el-select v-model="form.depart" placeholder="请选择部门">
-                        <el-option label="财务部" value="1"></el-option>
-                        <el-option label="研发部" value="2"></el-option>
-                        <el-option label="人力部" value="3"></el-option>
+                       <span v-for="(value, index) in department" :key="index">
+                            <el-option :label="value['department']" :value="value['id']"></el-option>
+                        </span>
                     </el-select>
                 </el-form-item>
             </el-form>
@@ -151,6 +154,7 @@
                 <el-button type="primary" @click="add_emp">确 定</el-button>
             </div>
         </el-dialog>
+
 
         <el-dialog title="修改员工" :visible.sync="dialogFormVisible1" width="700px" @close="close_dialog(1)">
             <el-form :model="form1">
@@ -193,23 +197,24 @@
                     <el-col :span="21">
                         <el-date-picker type="date" placeholder="请选择需要修改的日期" format="yyyy年 MM月 dd日"
                                         v-model="form1.birthday"
-                                        value-format="yyyy-MM-dd"
-                                        style="width: 100%;"></el-date-picker>
+                                        value-format="yyyy-MM-dd"></el-date-picker>
                     </el-col>
                 </el-form-item>
                 <el-form-item label="部门" :label-width="formLabelWidth">
                     <el-select v-model="form1.depart" placeholder="请选择部门">
-                        <el-option label="财务部" :value=1></el-option>
-                        <el-option label="研发部" :value=2></el-option>
-                        <el-option label="人力部" :value=3></el-option>
+                        <span v-for="(value, index) in department" :key="index">
+                            <el-option :label="value['department']" :value="value['id']"></el-option>
+                        </span>
                     </el-select>
                 </el-form-item>
             </el-form>
-            <div slot="footer" class="dialog-footer" align="center">
+            <div align="center">
                 <el-button @click="dialogFormVisible1 = false">取 消</el-button>
                 <el-button type="primary" @click="update">确 定</el-button>
             </div>
         </el-dialog>
+
+
     </div>
 </template>
 
@@ -218,8 +223,10 @@ export default {
     name: "index",
     data() {
         return {
+            date: new Date().toLocaleString(),
             name: '',
             emp_list: '',
+            department: '',
             dialogFormVisible1: false,
             dialogFormVisible: false,
             imageUrl: '',
@@ -249,6 +256,7 @@ export default {
         if (sessionStorage.name !== undefined) {
             this.name = sessionStorage.name;
             this.get_emp_list();
+            this.get_department();
         } else {
             this.$message({
                 showClose: true,
@@ -285,6 +293,17 @@ export default {
             }).then(res => {
                 // console.log(res);
                 this.emp_list = res.data;
+            }).catch(error => {
+                console.log(error);
+            })
+        },
+        get_department() {
+            this.$axios({
+                url: 'http://127.0.0.1:8000/department/',
+                method: 'get',
+            }).then(res => {
+                // console.log(res);
+                this.department = res.data;
             }).catch(error => {
                 console.log(error);
             })
@@ -467,6 +486,16 @@ export default {
                 this.form1.head_pic = '';
             }
         },
+    },
+    mounted() {
+        this.timer = setInterval(() => {
+            this.date = new Date().toLocaleString(); // 修改数据date
+        }, 1000)
+    },
+    beforeDestroy() {
+        if (this.timer) {
+            clearInterval(this.timer); // 在Vue实例销毁前，清除我们的定时器
+        }
     },
 }
 </script>
