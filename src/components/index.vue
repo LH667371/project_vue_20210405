@@ -79,7 +79,7 @@
                             {{ value['depart_name'] }}
                         </td>
                         <td>
-                            <a href="javascript:void(0)" @click="del(value['id'], value['name'])">删除</a>&nbsp;<a
+                            <a href="javascript:void(0)" @click="del_emp(value['id'], value['name'], index)">删除</a>&nbsp;<a
                             href="javascript:void(0)" @click="update_emp(value['id'])">修改</a>
                         </td>
                     </tr>
@@ -94,8 +94,19 @@
                 ABC@126.com
             </div>
         </div>
-        <el-dialog title="添加员工" :visible.sync="dialogFormVisible" width="700px">
+        <el-dialog title="添加员工" :visible.sync="dialogFormVisible" width="700px" @close="close_dialog(0)">
             <el-form :model="form">
+                <el-form-item label="头像" :label-width="formLabelWidth">
+                    <el-upload
+                        class="avatar-uploader"
+                        action=""
+                        :auto-upload="false"
+                        :show-file-list="false"
+                        :on-change="changeUpload">
+                        <img v-if="imageUrl" :src="imageUrl" class="avatar" alt="">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </el-form-item>
                 <el-form-item label="名字" :label-width="formLabelWidth">
                     <el-col :span="21">
                         <el-input v-model="form.name" autocomplete="off"></el-input>
@@ -136,8 +147,19 @@
             </div>
         </el-dialog>
 
-        <el-dialog title="修改员工" :visible.sync="dialogFormVisible1" width="700px">
+        <el-dialog title="修改员工" :visible.sync="dialogFormVisible1" width="700px" @close="close_dialog(1)">
             <el-form :model="form1">
+                <el-form-item label="头像" :label-width="formLabelWidth">
+                    <el-upload
+                        class="avatar-uploader"
+                        action=""
+                        :auto-upload="false"
+                        :show-file-list="false"
+                        :on-change="changeUpload">
+                        <img v-if="imageUrl" :src="imageUrl" class="avatar" alt="">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </el-form-item>
                 <el-form-item label="id" :label-width="formLabelWidth">
                     <el-col :span="21">
                         <el-input v-model="form1.id" autocomplete="off" readonly></el-input>
@@ -195,6 +217,7 @@ export default {
             emp_list: '',
             dialogFormVisible1: false,
             dialogFormVisible: false,
+            imageUrl: '',
             form: {
                 name: '',
                 salary: '',
@@ -202,6 +225,7 @@ export default {
                 gender: '',
                 birthday: '',
                 depart: '',
+                head_pic: '',
             },
             form1: {
                 id: '',
@@ -211,6 +235,7 @@ export default {
                 gender: '',
                 birthday: '',
                 depart: '',
+                head_pic: '',
             },
             formLabelWidth: '90px'
         }
@@ -259,7 +284,7 @@ export default {
                 console.log(error);
             })
         },
-        del(id, name) {
+        del_emp(id, name, index) {
             this.$confirm('此操作将永久删除 ' + name + ' 员工, 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -270,8 +295,9 @@ export default {
                     method: 'delete',
                 }).then(res => {
                     // console.log(res);
-                    this.get_emp_list();
+                    // this.get_emp_list();
                     // this.$router.push('/index');
+                    this.emp_list.splice(index, 1);
                     this.$message({
                         type: 'success',
                         message: '删除成功!'
@@ -291,18 +317,33 @@ export default {
             });
         },
         add_emp() {
+            let formData = new FormData();
+            // 将所有的属性添加至formData中 参数1：后台接受的key  参数2：用户输入的值
+            formData.append("head_pic", this.form.head_pic);
+            formData.append("id", '');
+            formData.append("name", this.form.name);
+            formData.append("salary", this.form.salary);
+            formData.append("age", this.form.age);
+            formData.append("gender", this.form.gender);
+            formData.append("birthday", this.form.birthday);
+            formData.append("depart", this.form.depart);
             this.$axios({
                 url: 'http://127.0.0.1:8000/emplist/',
                 method: 'post',
-                data: {
-                    id: '',
-                    name: this.form.name,
-                    salary: this.form.salary,
-                    age: this.form.age,
-                    gender: this.form.gender,
-                    birthday: this.form.birthday,
-                    depart: this.form.depart,
-                }
+                data: formData,
+                // data: {
+                //     id: '',
+                //     name: this.form.name,
+                //     salary: this.form.salary,
+                //     age: this.form.age,
+                //     gender: this.form.gender,
+                //     birthday: this.form.birthday,
+                //     depart: this.form.depart,
+                // },
+                headers: {
+                    // 当前请求时包含文件
+                    'content-type': "multipart/form-data"
+                },
             }).then(res => {
                 // console.log(res);
                 this.dialogFormVisible = false;
@@ -311,12 +352,6 @@ export default {
                     type: 'success',
                     message: '添加成功!'
                 });
-                this.form.name = '';
-                this.form.salary = '';
-                this.form.birthday = '';
-                this.form.depart = '';
-                this.form.age = '';
-                this.form.gender = '';
             }).catch(error => {
                 console.log(error);
                 this.$message({
@@ -339,25 +374,43 @@ export default {
                 this.form1.gender = parseInt(res.data['gender']);
                 this.form1.birthday = res.data['birthday'];
                 this.form1.depart = parseInt(res.data['depart']);
+                this.imageUrl = res.data['head_pic'];
             }).catch(error => {
                 console.log(error);
             })
         },
         update() {
+            let formData = new FormData();
+            // 将所有的属性添加至formData中 参数1：后台接受的key  参数2：用户输入的值
+            if (this.form1.head_pic){
+                formData.append("head_pic", this.form1.head_pic);
+            }
+            formData.append("id", this.form1.id);
+            formData.append("name", this.form1.name);
+            formData.append("salary", this.form1.salary);
+            formData.append("age", this.form1.age);
+            formData.append("gender", this.form1.gender);
+            formData.append("birthday", this.form1.birthday);
+            formData.append("depart", this.form1.depart);
             this.$axios({
                 url: 'http://127.0.0.1:8000/emplist/' + this.form1.id + '/',
                 method: 'patch',
-                data: {
-                    id: this.form1.id,
-                    name: this.form1.name,
-                    salary: this.form1.salary,
-                    age: this.form1.age,
-                    gender: this.form1.gender,
-                    birthday: this.form1.birthday,
-                    depart: this.form1.depart,
-                }
+                data: formData,
+                headers: {
+                    // 当前请求时包含文件
+                    'content-type': "multipart/form-data"
+                },
+                // data: {
+                //     id: this.form1.id,
+                //     name: this.form1.name,
+                //     salary: this.form1.salary,
+                //     age: this.form1.age,
+                //     gender: this.form1.gender,
+                //     birthday: this.form1.birthday,
+                //     depart: this.form1.depart,
+                // }
             }).then(res => {
-                console.log(res);
+                // console.log(res);
                 this.dialogFormVisible = false;
                 this.get_emp_list();
                 this.$message({
@@ -372,11 +425,73 @@ export default {
                     message: '修改失败!'
                 });
             });
-        }
+        },
+        changeUpload(file) {
+            const isJPG = file.raw['type'] === 'image/jpeg' || 'image/png';
+            const isLt2M = file.raw['size'] / 1024 / 1024 < 2;
+            if (!isJPG) {
+                this.$message.error('上传头像图片只能是 JPG/PNG 格式!');
+            } else if (!isLt2M) {
+                this.$message.error('上传头像图片大小不能超过 2MB!');
+            } else {
+                this.imageUrl = URL.createObjectURL(file.raw);
+                if (this.dialogFormVisible)
+                    this.form.head_pic = file.raw
+                if (this.dialogFormVisible1)
+                    this.form1.head_pic = file.raw
+            }
+        },
+        close_dialog(index) {
+            if (index === 0) {
+                this.imageUrl = '';
+                this.form.name = '';
+                this.form.salary = '';
+                this.form.birthday = '';
+                this.form.depart = '';
+                this.form.age = '';
+                this.form.gender = '';
+                this.form.head_pic = '';
+            }
+            else {
+                this.imageUrl = '';
+                this.form1.name = '';
+                this.form1.salary = '';
+                this.form1.birthday = '';
+                this.form1.depart = '';
+                this.form1.age = '';
+                this.form1.gender = '';
+                this.form1.head_pic = '';
+            }
+        },
     },
 }
 </script>
 
-<style scoped>
+<style>
+.avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
 
+.avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+}
+
+.avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    text-align: center;
+}
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    display: block;
+}
 </style>
