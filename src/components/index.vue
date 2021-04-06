@@ -112,10 +112,8 @@
                     </el-col>
                 </el-form-item>
                 <el-form-item label="性别" :label-width="formLabelWidth">
-                    <el-select v-model="form.gender" placeholder="请选择性别">
-                        <el-option label="男" value="0"></el-option>
-                        <el-option label="女" value="1"></el-option>
-                    </el-select>
+                    <el-radio v-model="form.gender" label="0">男</el-radio>
+                    <el-radio v-model="form.gender" label="1">女</el-radio>
                 </el-form-item>
                 <el-form-item label="生日" :label-width="formLabelWidth">
                     <el-col :span="21">
@@ -161,10 +159,8 @@
                     </el-col>
                 </el-form-item>
                 <el-form-item label="性别" :label-width="formLabelWidth">
-                    <el-select v-model="form1.gender" placeholder="请选择性别">
-                        <el-option label="男" :value=0></el-option>
-                        <el-option label="女" :value=1></el-option>
-                    </el-select>
+                    <el-radio v-model="form1.gender" :label="0">男</el-radio>
+                    <el-radio v-model="form1.gender" :label="1">女</el-radio>
                 </el-form-item>
                 <el-form-item label="生日" :label-width="formLabelWidth">
                     <el-col :span="21">
@@ -299,6 +295,7 @@ export default {
                 url: 'http://127.0.0.1:8000/emplist/',
                 method: 'post',
                 data: {
+                    id: '',
                     name: this.form.name,
                     salary: this.form.salary,
                     age: this.form.age,
