@@ -79,13 +79,18 @@
                             {{ value['depart_name'] }}
                         </td>
                         <td>
-                            <a href="javascript:void(0)" @click="del_emp(value['id'], value['name'], index)">删除</a>&nbsp;<a
-                            href="javascript:void(0)" @click="update_emp(value['id'])">修改</a>
+                            <el-tooltip class="item" effect="dark" content="删除" placement="right-start">
+                            <el-button type="danger" icon="el-icon-delete" size="mini" @click="del_emp(value['id'], value['name'], index)" round></el-button>
+                            </el-tooltip>
+                            &nbsp;
+                            <el-tooltip class="item" effect="dark" content="修改" placement="right-start">
+                            <el-button type="primary" icon="el-icon-edit" size="mini" @click="update_emp(value['id'])" round></el-button>
+                            </el-tooltip>
                         </td>
                     </tr>
                 </table>
                 <p>
-                    <input type="button" class="button" value="添加员工" @click="dialogFormVisible = true"/>
+                    <el-button type="primary" size="small" round @click="dialogFormVisible = true">添加员工</el-button>
                 </p>
             </div>
         </div>
@@ -382,7 +387,7 @@ export default {
         update() {
             let formData = new FormData();
             // 将所有的属性添加至formData中 参数1：后台接受的key  参数2：用户输入的值
-            if (this.form1.head_pic){
+            if (this.form1.head_pic) {
                 formData.append("head_pic", this.form1.head_pic);
             }
             formData.append("id", this.form1.id);
@@ -451,8 +456,7 @@ export default {
                 this.form.age = '';
                 this.form.gender = '';
                 this.form.head_pic = '';
-            }
-            else {
+            } else {
                 this.imageUrl = '';
                 this.form1.name = '';
                 this.form1.salary = '';
