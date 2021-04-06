@@ -197,7 +197,6 @@ export default {
         return {
             name: '',
             emp_list: '',
-            dialogTableVisible: false,
             dialogFormVisible1: false,
             dialogFormVisible: false,
             form: {
