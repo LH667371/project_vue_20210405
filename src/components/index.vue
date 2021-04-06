@@ -6,7 +6,10 @@
                     <p>
                         {{ date }}
                         <br/>
-                        <a href="javascript:void(0)" @click="logout">安全退出</a>
+                        <!--                        <a href="javascript:void(0)" @click="logout">安全退出</a>-->
+                        <span>
+                            <el-link icon="el-icon-switch-button" :underline="false" @click="logout">安全退出</el-link>
+                        </span>
                     </p>
                 </div>
                 <div id="topheader">
