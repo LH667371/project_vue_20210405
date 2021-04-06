@@ -165,7 +165,7 @@
                 <el-form-item label="生日" :label-width="formLabelWidth">
                     <el-col :span="21">
                         <el-date-picker type="date" placeholder="请选择需要修改的日期" format="yyyy年 MM月 dd日"
-                                        v-model="form.birthday"
+                                        v-model="form1.birthday"
                                         value-format="yyyy-MM-dd"
                                         style="width: 100%;"></el-date-picker>
                     </el-col>
