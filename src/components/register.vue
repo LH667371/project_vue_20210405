@@ -4,7 +4,7 @@
             <div id="header">
                 <div id="rightheader">
                     <p>
-                        {{ date }}
+                        {{ date }} {{ time }}
                         <br/>
                     </p>
                 </div>
@@ -86,7 +86,7 @@
                 </table>
                 <p align="center">
                     <el-button size="small" @click="register" round>提 交</el-button>
-<!--                    <input type="submit" class="button" value="提交" @click="register"/>-->
+                    <!--                    <input type="submit" class="button" value="提交" @click="register"/>-->
                     &nbsp;&nbsp
                     <router-link to="/">登录</router-link>
                 </p>
@@ -105,7 +105,8 @@ export default {
     name: "register",
     data() {
         return {
-            date: new Date().toLocaleString(),
+            date: new Date().toLocaleDateString(),
+            time: new Date().toLocaleTimeString('chinese', {hour12: false}),
             email: '',
             email_msg: '*必填',
             phone: '',
@@ -201,7 +202,8 @@ export default {
     },
     mounted() {
         this.timer = setInterval(() => {
-            this.date = new Date().toLocaleString(); // 修改数据date
+            this.date = new Date().toLocaleDateString(); // 修改数据date
+            this.time = new Date().toLocaleTimeString('chinese', {hour12: false});
         }, 1000)
     },
     beforeDestroy() {

@@ -4,7 +4,7 @@
             <div id="header">
                 <div id="rightheader">
                     <p>
-                        {{ date }}
+                        {{ date }} {{ time }}
                         <br/>
                         <!--                        <a href="javascript:void(0)" @click="logout">安全退出</a>-->
                         <span>
@@ -192,7 +192,8 @@ export default {
     name: "index",
     data() {
         return {
-            date: new Date().toLocaleString(),
+            date: new Date().toLocaleDateString(),
+            time: new Date().toLocaleTimeString('chinese', {hour12: false}),
             name: '',
             emp_list: '',
             department: '',
@@ -446,7 +447,8 @@ export default {
     },
     mounted() {
         this.timer = setInterval(() => {
-            this.date = new Date().toLocaleString(); // 修改数据date
+            this.date = new Date().toLocaleDateString(); // 修改数据date
+            this.time = new Date().toLocaleTimeString('chinese', {hour12: false});
         }, 1000)
     },
     beforeDestroy() {

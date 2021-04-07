@@ -4,7 +4,7 @@
             <div id="header">
                 <div id="rightheader">
                     <p>
-                        {{ date }}
+                        {{ date }} {{ time }}
                         <br/>
                     </p>
                 </div>
@@ -43,21 +43,21 @@
                             <span style="color: red" v-show="msg2">*必填</span>
                         </td>
                     </tr>
-<!--                    <tr>-->
-<!--                        <td valign="middle" align="right">-->
-<!--                            验证码:-->
-<!--                        </td>-->
-<!--                        <td valign="middle" align="left">-->
-<!--                            <input type="text" class="inputgri" v-model="code"/>-->
-<!--                            <span class="span1" style="color:red;" v-show="msg3">*必填</span>-->
-<!--                            <img id="num" class="img" :src="src" title="看不清?点击换一张！"-->
-<!--                                 @click=""/>-->
-<!--                        </td>-->
-<!--                    </tr>-->
+                    <!--                    <tr>-->
+                    <!--                        <td valign="middle" align="right">-->
+                    <!--                            验证码:-->
+                    <!--                        </td>-->
+                    <!--                        <td valign="middle" align="left">-->
+                    <!--                            <input type="text" class="inputgri" v-model="code"/>-->
+                    <!--                            <span class="span1" style="color:red;" v-show="msg3">*必填</span>-->
+                    <!--                            <img id="num" class="img" :src="src" title="看不清?点击换一张！"-->
+                    <!--                                 @click=""/>-->
+                    <!--                        </td>-->
+                    <!--                    </tr>-->
                 </table>
                 <p align="center">
                     <el-button @click="login" size="small" round>提 交</el-button>
-<!--                    <input type="submit" class="button" value="提 交" @click="login"/>-->
+                    <!--                    <input type="submit" class="button" value="提 交" @click="login"/>-->
                     &nbsp;&nbsp
                     <router-link to="register/">注册</router-link>
                 </p>
@@ -76,7 +76,8 @@ export default {
     name: "login",
     data() {
         return {
-            date: new Date().toLocaleString(),
+            date: new Date().toLocaleDateString(),
+            time: new Date().toLocaleTimeString('chinese', {hour12: false}),
             username: "",
             msg1: false,
             password: "",
@@ -140,7 +141,8 @@ export default {
     },
     mounted() {
         this.timer = setInterval(() => {
-            this.date = new Date().toLocaleString(); // 修改数据date
+            this.date = new Date().toLocaleDateString(); // 修改数据date
+            this.time = new Date().toLocaleTimeString('chinese', {hour12: false});
         }, 1000)
     },
     beforeDestroy() {
