@@ -23,7 +23,7 @@
                     注册
                 </h1>
                 <table cellpadding="0" cellspacing="0" border="0"
-                       class="form_table">
+                       class="form_table" align="center">
                     <tr>
                         <td valign="middle" align="right">
                             邮箱:

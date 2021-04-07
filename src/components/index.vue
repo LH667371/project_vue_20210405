@@ -28,66 +28,32 @@
                 </h1>
                 <table class="table">
                     <tr class="table_header">
-                        <td>
-                            ID
-                        </td>
-                        <td>
-                            Name
-                        </td>
-                        <td>
-                            Photo
-                        </td>
-                        <td>
-                            Salary
-                        </td>
-                        <td>
-                            Age
-                        </td>
-                        <td>
-                            Gender
-                        </td>
-                        <td>
-                            Birthday
-                        </td>
-                        <td>
-                            Department
-                        </td>
-                        <td>
-                            Operation
-                        </td>
+                        <td>ID</td>
+                        <td>Name</td>
+                        <td>Photo</td>
+                        <td>Salary</td>
+                        <td>Age</td>
+                        <td>Gender</td>
+                        <td>Birthday</td>
+                        <td>Department</td>
+                        <td>Operation</td>
                     </tr>
                     <tr v-for="(value, index) in emp_list" :key="index" :class="{row1:index%2===0, row2:index%2!==0}">
+                        <td>{{ value['id'] }}</td>
+                        <td>{{ value['name'] }}</td>
+                        <td><img :src="value['head_pic']" style="height: 60px;"></td>
+                        <td>{{ value['salary'] }}</td>
+                        <td>{{ value['age'] }}</td>
+                        <td>{{ value['sex'] }}</td>
+                        <td>{{ value['birthday'] }}</td>
+                        <td>{{ value['depart_name'] }}</td>
                         <td>
-                            {{ value['id'] }}
-                        </td>
-                        <td>
-                            {{ value['name'] }}
-                        </td>
-                        <td>
-                            <img :src="value['head_pic']" style="height: 60px;">
-                        </td>
-                        <td>
-                            {{ value['salary'] }}
-                        </td>
-                        <td>
-                            {{ value['age'] }}
-                        </td>
-                        <td>
-                            {{ value['sex'] }}
-                        </td>
-                        <td>
-                            {{ value['birthday'] }}
-                        </td>
-                        <td>
-                            {{ value['depart_name'] }}
-                        </td>
-                        <td>
-                            <el-tooltip class="item" effect="dark" content="删除" placement="right-start">
+                            <el-tooltip class="item" effect="light" content="删除" placement="left-start">
                                 <el-button type="danger" icon="el-icon-delete" size="mini"
                                            @click="del_emp(value['id'], value['name'], index)" round></el-button>
                             </el-tooltip>
                             &nbsp;
-                            <el-tooltip class="item" effect="dark" content="修改" placement="right-start">
+                            <el-tooltip class="item" effect="light" content="修改" placement="right-start">
                                 <el-button type="primary" icon="el-icon-edit" size="mini"
                                            @click="update_emp(value['id'])" round></el-button>
                             </el-tooltip>
@@ -283,10 +249,7 @@ export default {
                 sessionStorage.removeItem('name');
                 this.$router.push('/');
             }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '您已取消退出！'
-                });
+
             });
         },
         get_emp_list() {
@@ -427,15 +390,6 @@ export default {
                     // 当前请求时包含文件
                     'content-type': "multipart/form-data"
                 },
-                // data: {
-                //     id: this.form1.id,
-                //     name: this.form1.name,
-                //     salary: this.form1.salary,
-                //     age: this.form1.age,
-                //     gender: this.form1.gender,
-                //     birthday: this.form1.birthday,
-                //     depart: this.form1.depart,
-                // }
             }).then(res => {
                 // console.log(res);
                 this.dialogFormVisible = false;

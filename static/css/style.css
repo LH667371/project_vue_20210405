@@ -341,7 +341,7 @@ a:hover, a:hover, a:hover {
     text-decoration: underline;
 }
 
-/* #content p.paging 
+/* #content p.paging
 ---------------------------------*/
 #content p.paging {
     padding: 5px;
@@ -361,7 +361,6 @@ a:hover, a:hover, a:hover {
 ---------------------------------------------*/
 .form_table {
     margin-bottom: 15px;
-    margin-left: 220px;
     font-size: 1.1em;
 }
 
@@ -460,7 +459,7 @@ input.inputgri:focus, select.inputgri:focus, textarea.inputgri:focus {
     text-decoration: underline;
 }
 
-/* Other links 
+/* Other links
 ----------------*/
 .other_links {
     background: #eeeeee;

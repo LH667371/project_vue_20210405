@@ -23,7 +23,7 @@
                     登录
                 </h1>
                 <table cellpadding="0" cellspacing="0" border="0"
-                       class="form_table">
+                       class="form_table" align="center">
                     <tr>
                         <td valign="middle" align="right">
                             账号:
@@ -43,18 +43,17 @@
                             <span style="color: red" v-show="msg2">*必填</span>
                         </td>
                     </tr>
-                    <tr>
-                        <td valign="middle" align="right">
-                            验证码:
-                        </td>
-                        <td valign="middle" align="left">
-<!--                            <input type="text" class="inputgri" @blur="check_captcha" v-model="code"/>-->
-                            <input type="text" class="inputgri" v-model="code"/>
-                            <span class="span1" style="color:red;" v-show="msg3">*必填</span>
-                            <img id="num" class="img" :src="src" title="看不清?点击换一张！"
-                                 @click="src='http://127.0.0.1:8000/captcha/?'+ new Date().getTime()"/>
-                        </td>
-                    </tr>
+<!--                    <tr>-->
+<!--                        <td valign="middle" align="right">-->
+<!--                            验证码:-->
+<!--                        </td>-->
+<!--                        <td valign="middle" align="left">-->
+<!--                            <input type="text" class="inputgri" v-model="code"/>-->
+<!--                            <span class="span1" style="color:red;" v-show="msg3">*必填</span>-->
+<!--                            <img id="num" class="img" :src="src" title="看不清?点击换一张！"-->
+<!--                                 @click=""/>-->
+<!--                        </td>-->
+<!--                    </tr>-->
                 </table>
                 <p align="center">
                     <el-button @click="login" size="small" round>提 交</el-button>
@@ -82,7 +81,7 @@ export default {
             msg1: false,
             password: "",
             msg2: false,
-            src: "http://127.0.0.1:8000/captcha/",
+            src: "",
             captcha: '',
             code: '暂时不使用，可不填',
             msg3: false,
@@ -112,7 +111,7 @@ export default {
                         password: this.password
                     }
                 }).then(res => {
-                    console.log(res);
+                    // console.log(res);
                     if (res.data['status'] === 401)
                         this.$message({
                             showClose: true,
@@ -138,21 +137,6 @@ export default {
                     console.log(error);
                 })
         },
-        // check_captcha() {
-        //     this.msg3 = this.code === '';
-        //     if (!this.msg3)
-        //         this.$axios({
-        //             url: 'http://127.0.0.1:8000/captcha/',
-        //             method: 'post',
-        //             data: {
-        //                 code: this.code,
-        //             }
-        //         }).then(res => {
-        //             console.log(res);
-        //         }).catch(error => {
-        //             console.log(error);
-        //         })
-        // },
     },
     mounted() {
         this.timer = setInterval(() => {
