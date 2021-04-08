@@ -219,6 +219,7 @@ export default {
                 depart: '',
                 head_pic: '',
             },
+            old_form: {},
             formLabelWidth: '90px'
         }
     },
@@ -366,47 +367,54 @@ export default {
                 this.form1.birthday = res.data['birthday'];
                 this.form1.depart = parseInt(res.data['depart']);
                 this.imageUrl = res.data['head_pic'];
+                this.old_form = JSON.parse(JSON.stringify(this.form1));
             }).catch(error => {
                 console.log(error);
             })
         },
         update() {
-            let formData = new FormData();
-            // 将所有的属性添加至formData中 参数1：后台接受的key  参数2：用户输入的值
-            if (this.form1.head_pic) {
-                formData.append("head_pic", this.form1.head_pic);
-            }
-            formData.append("id", this.form1.id);
-            formData.append("name", this.form1.name);
-            formData.append("salary", this.form1.salary);
-            formData.append("age", this.form1.age);
-            formData.append("gender", this.form1.gender);
-            formData.append("birthday", this.form1.birthday);
-            formData.append("depart", this.form1.depart);
-            this.$axios({
-                url: 'http://127.0.0.1:8000/emplist/' + this.form1.id + '/',
-                method: 'patch',
-                data: formData,
-                headers: {
-                    // 当前请求时包含文件
-                    'content-type': "multipart/form-data"
-                },
-            }).then(res => {
-                // console.log(res);
-                this.dialogFormVisible = false;
-                this.get_emp_list();
-                this.$message({
-                    type: 'success',
-                    message: '修改成功!'
+            if (JSON.stringify(this.form1) !== JSON.stringify(this.old_form)) {
+                let formData = new FormData();
+                // 将所有的属性添加至formData中 参数1：后台接受的key  参数2：用户输入的值
+                if (this.form1.head_pic) {
+                    formData.append("head_pic", this.form1.head_pic);
+                }
+                formData.append("id", this.form1.id);
+                formData.append("name", this.form1.name);
+                formData.append("salary", this.form1.salary);
+                formData.append("age", this.form1.age);
+                formData.append("gender", this.form1.gender);
+                formData.append("birthday", this.form1.birthday);
+                formData.append("depart", this.form1.depart);
+                this.$axios({
+                    url: 'http://127.0.0.1:8000/emplist/' + this.form1.id + '/',
+                    method: 'patch',
+                    data: formData,
+                    headers: {
+                        // 当前请求时包含文件
+                        'content-type': "multipart/form-data"
+                    },
+                }).then(res => {
+                    // console.log(res);
+                    this.dialogFormVisible = false;
+                    this.get_emp_list();
+                    this.$message({
+                        type: 'success',
+                        message: '修改成功!'
+                    });
+                    this.dialogFormVisible1 = false;
+                }).catch(error => {
+                    console.log(error);
+                    this.$message({
+                        type: 'error',
+                        message: '修改失败!'
+                    });
                 });
-                this.dialogFormVisible1 = false;
-            }).catch(error => {
-                console.log(error);
+            } else
                 this.$message({
                     type: 'error',
-                    message: '修改失败!'
+                    message: '没有修改数据!'
                 });
-            });
         },
         changeUpload(file) {
             const isJPG = file.raw['type'] === 'image/jpeg' || 'image/png';
@@ -435,13 +443,6 @@ export default {
                 this.form.head_pic = '';
             } else {
                 this.imageUrl = '';
-                this.form1.name = '';
-                this.form1.salary = '';
-                this.form1.birthday = '';
-                this.form1.depart = '';
-                this.form1.age = '';
-                this.form1.gender = '';
-                this.form1.head_pic = '';
             }
         },
     },
