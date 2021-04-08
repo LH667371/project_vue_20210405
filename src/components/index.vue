@@ -309,48 +309,50 @@ export default {
             });
         },
         add_emp() {
-            let formData = new FormData();
-            // 将所有的属性添加至formData中 参数1：后台接受的key  参数2：用户输入的值
-            formData.append("head_pic", this.form.head_pic);
-            formData.append("id", '');
-            formData.append("name", this.form.name);
-            formData.append("salary", this.form.salary);
-            formData.append("age", this.form.age);
-            formData.append("gender", this.form.gender);
-            formData.append("birthday", this.form.birthday);
-            formData.append("depart", this.form.depart);
-            this.$axios({
-                url: 'http://127.0.0.1:8000/emplist/',
-                method: 'post',
-                data: formData,
-                // data: {
-                //     id: '',
-                //     name: this.form.name,
-                //     salary: this.form.salary,
-                //     age: this.form.age,
-                //     gender: this.form.gender,
-                //     birthday: this.form.birthday,
-                //     depart: this.form.depart,
-                // },
-                headers: {
-                    // 当前请求时包含文件
-                    'content-type': "multipart/form-data"
-                },
-            }).then(res => {
-                // console.log(res);
-                this.dialogFormVisible = false;
-                this.get_emp_list();
-                this.$message({
-                    type: 'success',
-                    message: '添加成功!'
+            let flag = true;
+            for (let key in this.form)
+                if (this.form[key] === '')
+                    flag = false;
+            // console.log(flag);
+            if (flag) {
+                let formData = new FormData();
+                // 将所有的属性添加至formData中 参数1：后台接受的key  参数2：用户输入的值
+                formData.append("head_pic", this.form.head_pic);
+                formData.append("id", '');
+                formData.append("name", this.form.name);
+                formData.append("salary", this.form.salary);
+                formData.append("age", this.form.age);
+                formData.append("gender", this.form.gender);
+                formData.append("birthday", this.form.birthday);
+                formData.append("depart", this.form.depart);
+                this.$axios({
+                    url: 'http://127.0.0.1:8000/emplist/',
+                    method: 'post',
+                    data: formData,
+                    headers: {
+                        // 当前请求时包含文件
+                        'content-type': "multipart/form-data"
+                    },
+                }).then(res => {
+                    // console.log(res);
+                    this.dialogFormVisible = false;
+                    this.get_emp_list();
+                    this.$message({
+                        type: 'success',
+                        message: '添加成功!'
+                    });
+                }).catch(error => {
+                    // console.log(error);
+                    this.$message({
+                        type: 'error',
+                        message: '添加失败，输入的类型有误!'
+                    });
                 });
-            }).catch(error => {
-                console.log(error);
+            } else
                 this.$message({
                     type: 'error',
-                    message: '添加失败!'
+                    message: '输入有空值!'
                 });
-            });
         },
         update_emp(id) {
             this.dialogFormVisible1 = true;
