@@ -258,6 +258,9 @@ export default {
             this.$axios({
                 url: 'http://127.0.0.1:8000/emplist/',
                 method: 'get',
+                headers: {
+                    'Authorization': 'auth ' + sessionStorage.token + ' jwt'
+                }
             }).then(res => {
                 // console.log(res);
                 this.emp_list = res.data;
@@ -269,6 +272,9 @@ export default {
             this.$axios({
                 url: 'http://127.0.0.1:8000/department/',
                 method: 'get',
+                headers: {
+                    'Authorization': 'auth ' + sessionStorage.token + ' jwt'
+                }
             }).then(res => {
                 // console.log(res);
                 this.department = res.data;
@@ -285,6 +291,9 @@ export default {
                 this.$axios({
                     url: 'http://127.0.0.1:8000/emplist/' + id + '/',
                     method: 'delete',
+                    headers: {
+                        'Authorization': 'auth ' + sessionStorage.token + ' jwt'
+                    }
                 }).then(res => {
                     // console.log(res);
                     // this.get_emp_list();
@@ -359,6 +368,9 @@ export default {
             this.$axios({
                 url: 'http://127.0.0.1:8000/emplist/' + id + '/',
                 method: 'get',
+                headers: {
+                    'Authorization': 'auth ' + sessionStorage.token + ' jwt'
+                }
             }).then(res => {
                 // console.log(res.data);
                 this.form1.id = parseInt(res.data['id']);
@@ -394,7 +406,8 @@ export default {
                     data: formData,
                     headers: {
                         // 当前请求时包含文件
-                        'content-type': "multipart/form-data"
+                        'content-type': "multipart/form-data",
+                        'Authorization': 'auth ' + sessionStorage.token + ' jwt'
                     },
                 }).then(res => {
                     // console.log(res);

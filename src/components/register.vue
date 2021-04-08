@@ -23,7 +23,16 @@
                     注册
                 </h1>
                 <table cellpadding="0" cellspacing="0" border="0"
-                       class="form_table" align="center">
+                       class="form_table">
+                    <tr>
+                        <td valign="middle" align="right">
+                            账号:
+                        </td>
+                        <td valign="middle" align="left">
+                            <input type="text" class="inputgri" v-model="username" @keyup="msg7 = username === '';"/>
+                            <span style="color: red" v-show="msg7">*必填</span>
+                        </td>
+                    </tr>
                     <tr>
                         <td valign="middle" align="right">
                             邮箱:
@@ -107,6 +116,7 @@ export default {
         return {
             date: new Date().toLocaleDateString(),
             time: new Date().toLocaleTimeString('chinese', {hour12: false}),
+            username: '',
             email: '',
             email_msg: '*必填',
             phone: '',
@@ -122,6 +132,7 @@ export default {
             msg4: false,
             msg5: false,
             msg6: false,
+            msg7: false,
         }
     },
     methods: {
@@ -132,11 +143,13 @@ export default {
             this.msg4 = this.re_password === '';
             this.msg5 = this.name === '';
             this.msg6 = this.gender === '';
-            if (!this.msg1 && !this.msg2 && !this.msg3 && !this.msg4 && !this.msg5 && !this.msg6)
+            this.msg7 = this.username === '';
+            if (!this.msg1 && !this.msg2 && !this.msg3 && !this.msg4 && !this.msg5 && !this.msg6 && !this.msg7)
                 this.$axios({
-                    url: 'http://127.0.0.1:8000/user/',
+                    url: 'http://127.0.0.1:8000/register/',
                     method: 'post',
                     data: {
+                        username: this.username,
                         email: this.email,
                         phone: this.phone,
                         password: this.password,
@@ -152,7 +165,12 @@ export default {
                             type: 'success'
                         });
                         this.$router.push('/')
-                    }
+                    } else
+                        this.$message({
+                            showClose: true,
+                            message: '注册失败',
+                            type: 'error'
+                        });
                 }).catch(error => {
                     // console.log(error);
                     this.$message({

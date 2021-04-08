@@ -25,7 +25,7 @@
                 <table cellpadding="0" cellspacing="0" border="0"
                        class="form_table" align="center">
                     <tr>
-                        <td valign="middle" align="right">
+                        <td valign="middle">
                             账号:
                         </td>
                         <td valign="middle" align="left">
@@ -106,10 +106,10 @@ export default {
             if (!this.msg1 && !this.msg2)
                 this.$axios({
                     url: 'http://127.0.0.1:8000/user/',
-                    method: 'get',
-                    params: {
-                        username: this.username,
-                        password: this.password
+                    method: 'post',
+                    data: {
+                        account: this.username,
+                        pwd: this.password
                     }
                 }).then(res => {
                     // console.log(res);
@@ -126,7 +126,9 @@ export default {
                             type: 'error'
                         });
                     else {
+                        console.log(res);
                         sessionStorage.name = res.data['name'];
+                        sessionStorage.token = res.data['token'];
                         this.$message({
                             showClose: true,
                             message: '登录成功!',
