@@ -89,7 +89,7 @@ export default {
         }
     },
     created() {
-        if (sessionStorage.name) {
+        if (sessionStorage.token) {
             this.$router.push('/index');
             this.$message({
                 showClose: true,
@@ -126,7 +126,7 @@ export default {
                             type: 'error'
                         });
                     else {
-                        console.log(res);
+                        // console.log(res);
                         sessionStorage.name = res.data['name'];
                         sessionStorage.token = res.data['token'];
                         this.$message({

@@ -249,6 +249,7 @@ export default {
                     message: '退出成功!',
                 });
                 sessionStorage.removeItem('name');
+                sessionStorage.removeItem('token');
                 this.$router.push('/');
             }).catch(() => {
 
@@ -265,7 +266,15 @@ export default {
                 // console.log(res);
                 this.emp_list = res.data;
             }).catch(error => {
-                console.log(error);
+                if (error.request.status === 403) {
+                    this.$message({
+                        type: 'error',
+                        message: JSON.parse(error.request.response)["detail"]
+                    });
+                    sessionStorage.removeItem('name');
+                    sessionStorage.removeItem('token');
+                    this.$router.push('/');
+                }
             })
         },
         get_department() {
@@ -279,7 +288,15 @@ export default {
                 // console.log(res);
                 this.department = res.data;
             }).catch(error => {
-                console.log(error);
+                if (error.request.status === 403) {
+                    this.$message({
+                        type: 'error',
+                        message: JSON.parse(error.request.response)["detail"]
+                    });
+                    sessionStorage.removeItem('name');
+                    sessionStorage.removeItem('token');
+                    this.$router.push('/');
+                }
             })
         },
         del_emp(id, name, index) {
@@ -304,11 +321,19 @@ export default {
                         message: '删除成功!'
                     });
                 }).catch(error => {
-                    console.log(error);
-                    this.$message({
-                        type: 'error',
-                        message: '删除失败!'
-                    });
+                    if (error.request.status === 403) {
+                        this.$message({
+                            type: 'error',
+                            message: JSON.parse(error.request.response)["detail"]
+                        });
+                        sessionStorage.removeItem('name');
+                        sessionStorage.removeItem('token');
+                        this.$router.push('/');
+                    } else
+                        this.$message({
+                            type: 'error',
+                            message: '删除失败!'
+                        });
                 })
             }).catch(() => {
                 this.$message({
@@ -340,7 +365,8 @@ export default {
                     data: formData,
                     headers: {
                         // 当前请求时包含文件
-                        'content-type': "multipart/form-data"
+                        'content-type': "multipart/form-data",
+                        'Authorization': 'auth ' + sessionStorage.token + ' jwt'
                     },
                 }).then(res => {
                     // console.log(res);
@@ -351,11 +377,32 @@ export default {
                         message: '添加成功!'
                     });
                 }).catch(error => {
-                    // console.log(error);
-                    this.$message({
-                        type: 'error',
-                        message: '添加失败，输入的类型有误!'
-                    });
+                    if (error.request.status === 403) {
+                        this.$message({
+                            type: 'error',
+                            message: JSON.parse(error.request.response)["detail"]
+                        });
+                        sessionStorage.removeItem('name');
+                        sessionStorage.removeItem('token');
+                        this.$router.push('/');
+                    }
+                    if (error.request.status === 400) {
+                        let msg = '';
+                        for (let i in JSON.parse(error.request.response)) {
+                            if (i === 'salary')
+                                msg += '请输入正确的工资!'
+                            if (i === 'age')
+                                if (msg)
+                                    msg += '<br/>请输入正确的年龄！'
+                                else
+                                    msg += '请输入正确的年龄！'
+                        }
+                        this.$message({
+                            dangerouslyUseHTMLString: true,
+                            type: 'error',
+                            message: msg,
+                        });
+                    }
                 });
             } else
                 this.$message({
@@ -383,7 +430,15 @@ export default {
                 this.imageUrl = res.data['head_pic'];
                 this.old_form = JSON.parse(JSON.stringify(this.form1));
             }).catch(error => {
-                console.log(error);
+                if (error.request.status === 403) {
+                    this.$message({
+                        type: 'error',
+                        message: JSON.parse(error.request.response)["detail"]
+                    });
+                    sessionStorage.removeItem('name');
+                    sessionStorage.removeItem('token');
+                    this.$router.push('/');
+                }
             })
         },
         update() {
@@ -419,11 +474,19 @@ export default {
                     });
                     this.dialogFormVisible1 = false;
                 }).catch(error => {
-                    console.log(error);
-                    this.$message({
-                        type: 'error',
-                        message: '修改失败，输入错误!'
-                    });
+                    if (error.request.status === 403) {
+                        this.$message({
+                            type: 'error',
+                            message: JSON.parse(error.request.response)["detail"]
+                        });
+                        sessionStorage.removeItem('name');
+                        sessionStorage.removeItem('token');
+                        this.$router.push('/');
+                    } else
+                        this.$message({
+                            type: 'error',
+                            message: '修改失败，输入错误!'
+                        });
                 });
             } else
                 this.$message({
