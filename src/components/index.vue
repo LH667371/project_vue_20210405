@@ -23,9 +23,17 @@
             <div id="content">
                 <p id="whereami">
                 </p>
-                <h1>
+                <h1 style="float: left">
                     {{ name }}，欢迎您的访问！
                 </h1>
+                <el-button style="float: right" size="mini" @click="search" plain>搜索</el-button>
+                <el-input
+                    style="float: right;width: 150px"
+                    size="mini"
+                    placeholder="请输入搜索内容"
+                    prefix-icon="el-icon-search"
+                    v-model="info">
+                </el-input>
                 <table class="table">
                     <tr class="table_header">
                         <td>ID</td>
@@ -42,7 +50,7 @@
                         <td>{{ value['id'] }}</td>
                         <td>{{ value['name'] }}</td>
                         <td><img :src="value['head_pic']" style="height: 60px;"></td>
-                        <td>{{ value['salary'] }}</td>
+                        <td>{{ value['salary'] }}元</td>
                         <td>{{ value['age'] }}</td>
                         <td>{{ value['sex'] }}</td>
                         <td>{{ value['birthday'] }}</td>
@@ -61,6 +69,18 @@
                     </tr>
                 </table>
                 <p>
+                    <el-pagination
+                        align="center"
+                        background
+                        layout="prev, pager, next"
+                        :page-size="5"
+                        :pager-count="5"
+                        :total="total"
+                        :current-page.sync="page_now"
+                        @next-click="page"
+                        @prev-click="page"
+                        @current-change="page">
+                    </el-pagination>
                     <el-button type="primary" size="small" round @click="dialogFormVisible = true">添加员工</el-button>
                 </p>
             </div>
@@ -220,7 +240,11 @@ export default {
                 head_pic: '',
             },
             old_form: {},
-            formLabelWidth: '90px'
+            formLabelWidth: '90px',
+            info: '',
+            info_click: false,
+            total: 0,
+            page_now: 1,
         }
     },
     created() {
@@ -237,7 +261,15 @@ export default {
             this.$router.push("/");
         }
     },
-    methods: {
+    watch: {
+        info(val, oldVal) {
+            if (val === '') {
+                this.info_click = false;
+                this.get_emp_list();
+            }
+        }
+    }
+    , methods: {
         logout() {
             this.$confirm('此操作将退出登录, 是否继续?', '', {
                 confirmButtonText: '确定',
@@ -256,15 +288,66 @@ export default {
             });
         },
         get_emp_list() {
+            // this.$axios({
+            //     url: 'http://127.0.0.1:8000/emplist/',
+            //     method: 'get',
+            //     headers: {
+            //         'Authorization': 'auth ' + sessionStorage.token + ' jwt'
+            //     }
+            // }).then(res => {
+            //     // console.log(res);
+            //     this.emp_list = res.data;
+            // }).catch(error => {
+            //     if (error.request.status === 403) {
+            //         this.$message({
+            //             type: 'error',
+            //             message: JSON.parse(error.request.response)["detail"]
+            //         });
+            //         sessionStorage.removeItem('name');
+            //         sessionStorage.removeItem('token');
+            //         this.$router.push('/');
+            //     }
+            // })
             this.$axios({
-                url: 'http://127.0.0.1:8000/emplist/',
+                url: 'http://127.0.0.1:8000/search/?page=' + this.page_now,
                 method: 'get',
                 headers: {
                     'Authorization': 'auth ' + sessionStorage.token + ' jwt'
-                }
+                },
             }).then(res => {
                 // console.log(res);
-                this.emp_list = res.data;
+                this.emp_list = res.data['results'];
+                this.total = res.data['count'];
+            }).catch(error => {
+                if (error.request.status === 403) {
+                    this.$message({
+                        type: 'error',
+                        message: JSON.parse(error.request.response)["detail"]
+                    });
+                    sessionStorage.removeItem('name');
+                    sessionStorage.removeItem('token');
+                    this.$router.push('/');
+                }
+            })
+        },
+        page(page) {
+            let info = '';
+            if (this.info_click)
+                info = this.info;
+            this.page_now = page;
+            this.$axios({
+                url: 'http://127.0.0.1:8000/search/?page=' + page,
+                method: 'get',
+                params: {
+                    search: info,
+                },
+                headers: {
+                    'Authorization': 'auth ' + sessionStorage.token + ' jwt'
+                },
+            }).then(res => {
+                // console.log(res);
+                this.emp_list = res.data['results'];
+                this.total = res.data['count'];
             }).catch(error => {
                 if (error.request.status === 403) {
                     this.$message({
@@ -522,6 +605,43 @@ export default {
             } else {
                 this.imageUrl = '';
             }
+        },
+        search() {
+            if (this.info !== '') {
+                this.$axios({
+                    url: 'http://127.0.0.1:8000/search/',
+                    method: 'get',
+                    params: {
+                        search: this.info,
+                    },
+                    headers: {
+                        'Authorization': 'auth ' + sessionStorage.token + ' jwt'
+                    },
+                }).then(res => {
+                    // console.log(res);
+                    this.emp_list = res.data['results'];
+                    this.total = res.data['count'];
+                    this.info_click = true;
+                    this.$message({
+                        type: 'success',
+                        message: '查询成功!'
+                    });
+                }).catch(error => {
+                    if (error.request.status === 403) {
+                        this.$message({
+                            type: 'error',
+                            message: JSON.parse(error.request.response)["detail"]
+                        });
+                        sessionStorage.removeItem('name');
+                        sessionStorage.removeItem('token');
+                        this.$router.push('/');
+                    }
+                })
+            } else
+                this.$message({
+                    type: 'error',
+                    message: '请输入搜索内容!'
+                });
         },
     },
     mounted() {

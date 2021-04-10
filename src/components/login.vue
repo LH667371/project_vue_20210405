@@ -29,8 +29,9 @@
                             账号:
                         </td>
                         <td valign="middle" align="left">
-                            <input type="text" class="inputgri" v-model="username"
-                                   @blur="msg1=username === ''"/>
+                            <el-input style="width: 200px" v-model="username" size="mini" @blur="msg1=username === ''"
+                                      placeholder="请输入账号"></el-input>
+                            <!--                            <input type="text" class="inputgri" v-model="username" @blur="msg1=username === ''"/>-->
                             <span style="color: red" v-show="msg1">*必填</span>
                         </td>
                     </tr>
@@ -39,7 +40,9 @@
                             密码:
                         </td>
                         <td valign="middle" align="left">
-                            <input type="password" class="inputgri" v-model="password" @blur="msg2=password === ''"/>
+                            <el-input style="width: 200px" size="mini" placeholder="请输入密码" v-model="password" @blur="msg2=password === ''"
+                                      show-password></el-input>
+                            <!--                            <input type="password" class="inputgri" v-model="password" @blur="msg2=password === ''"/>-->
                             <span style="color: red" v-show="msg2">*必填</span>
                         </td>
                     </tr>
